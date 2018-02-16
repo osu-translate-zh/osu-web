@@ -47,8 +47,8 @@ return [
         ],
 
         'timestamp' => [
-            'exceeds_beatmapset_length' => 'Specified timestamp is beyond the length of the beatmap.',
-            'negative' => "Timestamp can't be negative.",
+            'exceeds_beatmapset_length' => '指定的时间戳不在谱面范围内。',
+            'negative' => '无法定位时间戳。',
         ],
     ],
 
