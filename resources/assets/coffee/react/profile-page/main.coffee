@@ -51,16 +51,16 @@ class ProfilePage.Main extends React.PureComponent
         selection: [0, 0]
       tabsSticky: false
       profileOrder: props.user.profile_order[..]
-      recentActivity: @props.user.recent_activity
-      scoresBest: @props.scores.best
-      scoresFirsts: @props.scores.firsts
-      scoresRecent: @props.scores.recent
-      beatmapPlaycounts: @props.beatmapsets.most_played
-      favouriteBeatmapsets: @props.beatmapsets.favourite
-      rankedAndApprovedBeatmapsets: @props.beatmapsets.ranked_and_approved
-      unrankedBeatmapsets: @props.beatmapsets.unranked
-      graveyardBeatmapsets: @props.beatmapsets.graveyard
-      recentlyReceivedKudosu: @props.recentlyReceivedKudosu
+      recentActivity: @props.extras.recentActivity
+      scoresBest: @props.extras.scoresBest
+      scoresFirsts: @props.extras.scoresFirsts
+      scoresRecent: @props.extras.scoresRecent
+      beatmapPlaycounts: @props.extras.beatmapPlaycounts
+      favouriteBeatmapsets: @props.extras.favouriteBeatmapsets
+      rankedAndApprovedBeatmapsets: @props.extras.rankedAndApprovedBeatmapsets
+      unrankedBeatmapsets: @props.extras.unrankedBeatmapsets
+      graveyardBeatmapsets: @props.extras.graveyardBeatmapsets
+      recentlyReceivedKudosu: @props.extras.recentlyReceivedKudosu
       showMorePagination: {}
 
     if @props.user.is_bot
@@ -84,6 +84,7 @@ class ProfilePage.Main extends React.PureComponent
     $(@pages).sortable
       cursor: 'move'
       handle: '.js-profile-page-extra--sortable-handle'
+      items: '.js-sortable--page'
       revert: 150
       scrollSpeed: 10
       update: @updateOrder
@@ -92,6 +93,7 @@ class ProfilePage.Main extends React.PureComponent
       containment: 'parent'
       cursor: 'move'
       disabled: !@props.withEdit
+      items: '.js-sortable--tab'
       revert: 150
       scrollSpeed: 0
       update: @updateOrder
@@ -126,6 +128,9 @@ class ProfilePage.Main extends React.PureComponent
 
   render: =>
     withMePage = @state.userPage.initialRaw.trim() != '' || @props.withEdit
+
+    profileOrder = @state.profileOrder.slice()
+    profileOrder.push 'account_standing' if !_.isEmpty @state.user.account_history
 
     extraPageParams =
       me:
@@ -190,6 +195,11 @@ class ProfilePage.Main extends React.PureComponent
           pagination: @state.showMorePagination
         component: ProfilePage.Historical
 
+      account_standing:
+        props:
+          user: @state.user
+        component: ProfilePage.AccountStanding
+
     div className: 'osu-layout osu-layout--full',
       el ProfilePage.Header,
         user: @state.user
@@ -216,11 +226,11 @@ class ProfilePage.Main extends React.PureComponent
             div
               className: 'page-mode page-mode--page-extra-tabs'
               ref: (el) => @tabs = el
-              for m in @state.profileOrder
+              for m in profileOrder
                 continue if m == 'me' && !withMePage
 
                 a
-                  className: 'page-mode__item'
+                  className: "page-mode__item #{'js-sortable--tab' if @isSortablePage m}"
                   key: m
                   'data-page-id': m
                   onClick: @tabClick
@@ -235,7 +245,7 @@ class ProfilePage.Main extends React.PureComponent
         div
           className: 'osu-layout__row'
           ref: (el) => @pages = el
-          for name in @state.profileOrder
+          for name in profileOrder
             @extraPage name, extraPageParams[name]
 
 
@@ -246,6 +256,7 @@ class ProfilePage.Main extends React.PureComponent
 
   extraPage: (name, {extraClass, props, component}) =>
     topClassName = 'js-switchable-mode-page--scrollspy js-switchable-mode-page--page'
+    topClassName += ' js-sortable--page' if @isSortablePage name
     props.withEdit = @props.withEdit
     props.name = name
 
@@ -384,7 +395,7 @@ class ProfilePage.Main extends React.PureComponent
       .fail (xhr) =>
         osu.emitAjaxError() xhr
 
-        @setState profileOrder: @state.user.profileOrder
+        @setState profileOrder: @state.user.profile_order
 
       .always LoadingOverlay.hide
 
@@ -407,3 +418,6 @@ class ProfilePage.Main extends React.PureComponent
       mode
     else
       modes[0]
+
+  isSortablePage: (page) ->
+    _.includes @state.profileOrder, page

@@ -27,14 +27,12 @@ return [
         'home' => [
             '_' => 'inicio',
             'account-edit' => 'ajustes',
-            'friends' => 'amigos',
             'friends-index' => 'amigos',
             'changelog-index' => 'listado de cambios',
             'changelog-show' => 'compilación',
             'getDownload' => 'descargar',
             'getIcons' => 'iconos',
             'groups-show' => 'grupos',
-            'index' => 'osu!',
             'legal-show' => 'información',
             'news-index' => 'novedades',
             'news-show' => 'novedades',
@@ -45,7 +43,7 @@ return [
         'help' => [
             '_' => 'ayuda',
             'getFaq' => 'preguntas frecuentes',
-            'getSupport' => 'soporte',
+            'getSupport' => 'soporte', //obsolete
             'getWiki' => 'wiki',
             'wiki-show' => 'wiki',
         ],
@@ -77,9 +75,8 @@ return [
         'community' => [
             '_' => 'comunidad',
             'dev' => 'osu!dev',
-            'getForum' => 'foro',
+            'getForum' => 'foro', // Base text changed to plural, please check.
             'getChat' => 'chat',
-            'getSupport' => 'soporte',
             'getLive' => 'en vivo',
             'contests' => 'concursos',
             'profile' => 'perfil',
@@ -87,10 +84,10 @@ return [
             'tournaments-index' => 'torneos',
             'tournaments-show' => 'información de torneos',
             'forum-topic-watches-index' => 'suscripciones',
-            'forum-topics-create' => 'foro',
-            'forum-topics-show' => 'foro',
-            'forum-forums-index' => 'foro',
-            'forum-forums-show' => 'foro',
+            'forum-topics-create' => 'foro', // Base text changed to plural, please check.
+            'forum-topics-show' => 'foro', // Base text changed to plural, please check.
+            'forum-forums-index' => 'foro', // Base text changed to plural, please check.
+            'forum-forums-show' => 'foro', // Base text changed to plural, please check.
         ],
         'multiplayer' => [
             '_' => 'multijugador',
@@ -116,7 +113,7 @@ return [
 
             'messages' => 'Mensajes',
             'settings' => 'Opciones',
-            'logout' => 'Salir',
+            'logout' => 'Salir', // Base text changed from "Log Out" to "Sign Out", please check.
             'help' => 'Ayuda',
             'beatmapset_activities' => 'actividades del usuario en el beatmap',
         ],
@@ -252,7 +249,7 @@ return [
         'links' => [
             'account-edit' => 'Ajustes',
             'friends' => 'Amigos',
-            'logout' => 'Cerrar sesión',
+            'logout' => 'Cerrar sesión', // Base text changed from "Log Out" to "Sign Out", please check.
             'profile' => 'Mi perfil',
         ],
     ],

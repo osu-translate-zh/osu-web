@@ -74,9 +74,12 @@ return [
 
         'mode' => [
             'events' => 'History',
-            'general' => 'General',
-            'general_all' => 'General (all difficulties)',
+            'general' => 'General :scope',
             'timeline' => 'Timeline',
+            'scopes' => [
+                'general' => 'This difficulty',
+                'generalAll' => 'All difficulties',
+            ],
         ],
 
         'new' => [
@@ -122,11 +125,15 @@ return [
         'confirm' => "Are you sure? This will use one out of your remaining :n hype and can't be undone.",
         'explanation' => 'Hype this beatmap to make it more visible for nomination and ranking!',
         'explanation_guest' => 'Login and hype this beatmap to make it more visible for nomination and ranking!',
-        'new_time' => "You'll get another hype at :new_time.",
+        'new_time' => "You'll get another hype :new_time.",
         'remaining' => 'You have :remaining hype left.',
         'required_text' => 'Hype: :current/:required',
         'section_title' => 'Hype Train',
         'title' => 'Hype',
+    ],
+
+    'feedback' => [
+        'button' => 'Leave Feedback',
     ],
 
     'nominations' => [
@@ -154,6 +161,7 @@ return [
             'not-found' => 'no results',
             'not-found-quote' => '... nope, nothing found.',
             'filters' => [
+                'general' => 'General',
                 'mode' => 'Mode',
                 'status' => 'Rank Status',
                 'genre' => 'Genre',
@@ -167,6 +175,10 @@ return [
         'mapped-by' => 'mapped by :mapper',
         'source' => 'from :source',
         'load-more' => 'Load more...',
+    ],
+    'general' => [
+        'recommended' => 'Recommended difficulty',
+        'converts' => 'Include converted beatmaps',
     ],
     'mode' => [
         'any' => 'Any',

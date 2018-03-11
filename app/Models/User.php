@@ -405,7 +405,7 @@ class User extends Model implements AuthenticatableContract, Messageable
 
     public function getUserFromAttribute($value)
     {
-        return presence(htmlspecialchars_decode($value));
+        return presence(html_entity_decode_better($value));
     }
 
     public function setUserFromAttribute($value)
@@ -415,7 +415,7 @@ class User extends Model implements AuthenticatableContract, Messageable
 
     public function getUserInterestsAttribute($value)
     {
-        return presence(htmlspecialchars_decode($value));
+        return presence(html_entity_decode_better($value));
     }
 
     public function setUserInterestsAttribute($value)
@@ -425,7 +425,7 @@ class User extends Model implements AuthenticatableContract, Messageable
 
     public function getUserOccAttribute($value)
     {
-        return presence(htmlspecialchars_decode($value));
+        return presence(html_entity_decode_better($value));
     }
 
     public function setUserOccAttribute($value)
@@ -696,7 +696,7 @@ class User extends Model implements AuthenticatableContract, Messageable
                 return true;
             }
 
-            $lastBan = $this->banHistories()->bans()->first();
+            $lastBan = $this->accountHistories()->bans()->first();
 
             $this->memoized[__FUNCTION__] = $lastBan !== null &&
                 $lastBan->period !== 0 &&
@@ -736,6 +736,16 @@ class User extends Model implements AuthenticatableContract, Messageable
     | }
     | return $response;
     */
+
+    public function monthlyPlaycounts()
+    {
+        return $this->hasMany(UserMonthlyPlaycount::class, 'user_id');
+    }
+
+    public function replaysWatchedCounts()
+    {
+        return $this->hasMany(UserReplaysWatchedCount::class, 'user_id');
+    }
 
     public function userGroups()
     {
@@ -983,9 +993,9 @@ class User extends Model implements AuthenticatableContract, Messageable
         return $this->hasOne(UserProfileCustomization::class, 'user_id');
     }
 
-    public function banHistories()
+    public function accountHistories()
     {
-        return $this->hasMany(UserBanHistory::class, 'user_id');
+        return $this->hasMany(UserAccountHistory::class, 'user_id');
     }
 
     public function userPage()
@@ -1095,7 +1105,7 @@ class User extends Model implements AuthenticatableContract, Messageable
 
     public function setPlaymodeAttribute($value)
     {
-        $this->osu_playmode = Beatmap::modeInt($attribute);
+        $this->osu_playmode = Beatmap::modeInt($value);
     }
 
     public function hasFavourited($beatmapset)
@@ -1249,6 +1259,23 @@ class User extends Model implements AuthenticatableContract, Messageable
         }
 
         return 3;
+    }
+
+    /**
+     * Recommended star difficulty.
+     *
+     * @param string $mode one of Beatmap::MODES
+     *
+     * @return float
+     */
+    public function recommendedStarDifficulty(string $mode)
+    {
+        $stats = $this->statistics($mode);
+        if ($stats) {
+            return pow($stats->rank_score, 0.4) * 0.195;
+        }
+
+        return 0.0;
     }
 
     public function refreshForumCache($forum = null, $postsChangeCount = 0)
@@ -1414,6 +1441,7 @@ class User extends Model implements AuthenticatableContract, Messageable
     public function profileBeatmapsetsFavourite()
     {
         return $this->favouriteBeatmapsets()
+            ->active()
             ->with('beatmaps');
     }
 
@@ -1421,6 +1449,7 @@ class User extends Model implements AuthenticatableContract, Messageable
     {
         return $this->beatmapsets()
             ->unranked()
+            ->active()
             ->with('beatmaps');
     }
 
@@ -1428,6 +1457,7 @@ class User extends Model implements AuthenticatableContract, Messageable
     {
         return $this->beatmapsets()
             ->graveyard()
+            ->active()
             ->with('beatmaps');
     }
 

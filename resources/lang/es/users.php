@@ -39,7 +39,7 @@ return [
     ],
     'login' => [
         '_' => 'Iniciar sesión',
-        'locked_ip' => 'tu dirección IP está bloqueada. Espera unos minutos.',
+        'locked_ip' => 'Tu dirección IP está bloqueada. Espera unos minutos.',
         'username' => 'Nombre de usuario',
         'password' => 'Contraseña',
         'button' => 'Iniciar sesión',
@@ -73,12 +73,11 @@ return [
     'show' => [
         '404' => '¡Usuario no encontrado! ;_;',
         'age' => ':age años',
-        'current_location' => 'Actualmente en :location',
         'first_members' => 'Aquí desde el comienzo',
         'is_developer' => 'osu!developer',
         'is_supporter' => 'osu!supporter',
-        'joined_at' => 'Se unió el :date',
-        'lastvisit' => 'Visto por última vez el :date',
+        'joined_at' => 'Se unió en :date',
+        'lastvisit' => 'Visto por última vez :date',
         'missingtext' => '¡Has cometido un error de ortografía! (o el usuario pudo haber sido baneado)',
         'origin_age' => ':age',
         'origin_country' => 'De :country',
@@ -102,7 +101,13 @@ return [
                     'unsupported_format' => 'Formato no soportado.',
                 ],
             ],
+
+            'default_playmode' => [
+                'is_default_tooltip' => 'modo de juego predeterminado',
+                'set' => 'establecer :mode como el modo de juego predeterminado del perfil',
+            ],
         ],
+
         'extra' => [
             'followers' => '1 seguidor|:count seguidores',
             'unranked' => 'No hay partidas recientes',
@@ -124,11 +129,13 @@ return [
                     'title' => 'Beatmaps Rankeados & Aprobados (:count)',
                 ],
                 'unranked' => [
-                    'title' => 'Beatmaps pendientes (:count)',
+                    'title' => 'Beatmaps Pendientes (:count)',
                 ],
             ],
             'historical' => [
                 'empty' => 'Sin récords de rendimiento. :(',
+                'title' => 'Historial',
+
                 'most_played' => [
                     'count' => 'veces jugado',
                     'title' => 'Beatmaps Más Jugados',
@@ -137,7 +144,6 @@ return [
                     'accuracy' => 'precisión: :percentage',
                     'title' => 'Jugadas Recientes (24h)',
                 ],
-                'title' => 'Historial',
             ],
             'kudosu' => [
                 'available' => 'Kudosu disponible',
@@ -205,6 +211,15 @@ return [
                 'weighted_pp' => 'valorado en: :pp (:percentage)',
             ],
         ],
+        'info' => [
+            'interests' => 'Intereses',
+            'lastfm' => 'Last.fm',
+            'location' => 'Ubicación actual',
+            'occupation' => 'Ocupación',
+            'skype' => 'Skype',
+            'twitter' => 'Twitter',
+            'website' => 'Sitio web',
+        ],
         'page' => [
             'description' => '<strong>¡sobre mi!</strong> es una área personalizable en tu perfil.',
             'edit_big' => '¡Editar sobre mi!',
@@ -222,7 +237,7 @@ return [
             'play_count' => 'Conteo de jugadas',
             'play_time' => 'Tiempo de juego total',
             'ranked_score' => 'Puntuación rankeada',
-            'replays_watched_by_others' => 'Repeticiones observadas por otros',
+            'replays_watched_by_others' => 'Repeticiones vistas por otros',
             'score_ranks' => 'Clasificación de las puntuaciones',
             'total_hits' => 'Aciertos totales',
             'total_score' => 'Puntuación total',

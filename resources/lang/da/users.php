@@ -57,7 +57,6 @@ return [
     'show' => [
         '404' => 'Bruger ikke fundet! ;_;',
         'age' => ':age år gammel',
-        'current_location' => 'Befinder sig i :location',
         'first_members' => 'Var her fra starten',
         'is_developer' => 'osu!developer',
         'is_supporter' => 'osu!supporter',
@@ -114,6 +113,8 @@ return [
             ],
             'historical' => [
                 'empty' => 'Ingen præstationsrekorder endnu. :(',
+                'title' => 'Historisk',
+
                 'most_played' => [
                     'count' => 'gange spillet',
                     'title' => 'Mest Spillede Beatmaps',
@@ -122,7 +123,6 @@ return [
                     'accuracy' => 'præcision: :percentage',
                     'title' => 'Seneste spil (24 timer)',
                 ],
-                'title' => 'Historisk',
             ],
             'kudosu' => [
                 'available' => 'Kudosu Tilgængelig',

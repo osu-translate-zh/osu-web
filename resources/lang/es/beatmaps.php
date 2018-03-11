@@ -74,8 +74,6 @@ return [
 
         'mode' => [
             'events' => 'Historial',
-            'general' => 'General',
-            'general_all' => 'General (todas las dificultades)',
             'timeline' => 'Línea de tiempo',
         ],
 
@@ -138,13 +136,17 @@ return [
         'nominate' => 'Nominar',
         'nominate_confirm' => '¿Nominar este beatmap?',
         'nominated_by' => 'nominado por :users',
-        'qualified' => 'Se estima que será rankeado :date, si no se encuentra ningún problema.',
+        'qualified' => 'Se estima que será rankeado el :date, si no se encuentra ningún problema.',
         'qualified_soon' => 'Se estima que será rankeado pronto, si no se encuentra ningún problema',
         'required_text' => 'Nominaciones: :current/:required',
         'reset_at' => 'Las nominaciones se reiniciaron :time_ago por el nuevo problema :discussion.',
         'reset_confirm' => '¿Estás seguro? Publicar un nuevo problema reiniciará todas las nominaciones.',
         'title' => 'Estado de Nominación',
         'unresolved_issues' => 'Todavía hay problemas sin resolver que deben ser resueltos primero.',
+    ],
+
+    'feedback' => [
+        'button' => 'Dejar comentarios',
     ],
 
     'listing' => [
@@ -154,6 +156,7 @@ return [
             'not-found' => 'no hay resultados',
             'not-found-quote' => '...nop, nada encontrado.',
             'filters' => [
+                'general' => 'General',
                 'mode' => 'Modo',
                 'status' => 'Estado de aprobación',
                 'genre' => 'Género',
@@ -167,6 +170,10 @@ return [
         'mapped-by' => 'mappeado por :mapper',
         'source' => 'de :source',
         'load-more' => 'Cargar más...',
+    ],
+    'general' => [
+        'recommended' => 'Dificultades recomendadas',
+        'converts' => 'Incluir beatmaps convertidos',
     ],
     'mode' => [
         'any' => 'Cualquiera',
@@ -183,7 +190,7 @@ return [
         'loved' => 'Amados',
         'faves' => 'Favoritos',
         'pending' => 'Pendientes',
-        'graveyard' => 'Sepultado',
+        'graveyard' => 'Sepultados',
         'my-maps' => 'Mis mapas',
     ],
     'genre' => [
@@ -219,7 +226,7 @@ return [
         '8K' => '8K',
         'FI' => 'Fade In',
         '9K' => '9K',
-        'NM' => 'No mods',
+        'NM' => 'Sin mods',
     ],
     'language' => [
         'any' => 'Cualquiera',
