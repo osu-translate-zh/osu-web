@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright 2015-2017 ppy Pty. Ltd.
+ *    Copyright 2015-2018 ppy Pty. Ltd.
  *
  *    This file is part of osu!web. osu!web is distributed with the hope of
  *    attracting more community contributions to the core ecosystem of osu!.
@@ -18,28 +18,18 @@
  *    along with osu!web.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace App\Models;
+namespace App\Transformers;
 
-class UserBanHistory extends Model
+use App\Models\UserMonthlyPlaycount;
+use League\Fractal;
+
+class UserMonthlyPlaycountTransformer extends Fractal\TransformerAbstract
 {
-    protected $table = 'osu_user_banhistory';
-    protected $primaryKey = 'ban_id';
-
-    protected $dates = ['timestamp'];
-    public $timestamps = false;
-
-    public function user()
+    public function transform(UserMonthlyPlaycount $playcount)
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
-
-    public function endTime()
-    {
-        return $this->timestamp->addSeconds($this->period);
-    }
-
-    public function scopeBans($query)
-    {
-        return $query->where('ban_status', '>', 0)->orderBy('timestamp', 'desc');
+        return [
+            'start_date' => json_time($playcount->startDate()),
+            'count' => $playcount->playcount,
+        ];
     }
 }

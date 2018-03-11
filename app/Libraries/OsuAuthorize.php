@@ -184,6 +184,18 @@ class OsuAuthorize
         $this->ensureLoggedIn($user);
         $this->ensureCleanRecord($user);
 
+        static $votableStates = [
+            Beatmapset::STATES['wip'],
+            Beatmapset::STATES['pending'],
+            Beatmapset::STATES['qualified'],
+        ];
+
+        if (!in_array($discussion->beatmapset->approved, $votableStates, true)) {
+            if (!$user->isBNG() && !$user->isGMT() && !$user->isQAT()) {
+                return $prefix.'wrong_beatmapset_state';
+            }
+        }
+
         if ($discussion->user_id === $user->user_id) {
             return $prefix.'owner';
         }
@@ -794,6 +806,11 @@ class OsuAuthorize
         } else {
             return $prefix.'no_access';
         }
+    }
+
+    public function checkUserSilenceShowExtendedInfo($user)
+    {
+        // admin only, i guess =D
     }
 
     public function checkWikiPageRefresh($user)

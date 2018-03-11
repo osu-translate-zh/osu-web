@@ -57,7 +57,6 @@ return [
     'show' => [
         '404' => 'Användare hittades inte! ;_;',
         'age' => ':age år gammal',
-        'current_location' => 'Just nu i :location',
         'first_members' => 'Här sen början',
         'is_developer' => 'osu!developer',
         'is_supporter' => 'osu!supporter',
@@ -114,6 +113,8 @@ return [
             ],
             'historical' => [
                 'empty' => 'Inga prestanda uppgifter. :(',
+                'title' => 'Historisk',
+
                 'most_played' => [
                     'count' => 'gånger spelade',
                     'title' => 'Mest Spelade Beatmaps',
@@ -122,7 +123,6 @@ return [
                     'accuracy' => 'precision: :percentage',
                     'title' => 'Senaste spel (24h)',
                 ],
-                'title' => 'Historisk',
             ],
             'kudosu' => [
                 'available' => 'Kudosu Tillängligt',

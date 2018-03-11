@@ -26,17 +26,19 @@ use League\Fractal;
 class UserTransformer extends Fractal\TransformerAbstract
 {
     protected $availableIncludes = [
-        'user_achievements',
         'defaultStatistics',
+        'disqus_auth',
+        'favourite_beatmapset_count',
         'follower_count',
         'friends',
-        'page',
-        'recent_activity',
-        'ranked_and_approved_beatmapset_count',
-        'unranked_beatmapset_count',
         'graveyard_beatmapset_count',
-        'favourite_beatmapset_count',
-        'disqus_auth',
+        'monthly_playcounts',
+        'page',
+        'account_history',
+        'ranked_and_approved_beatmapset_count',
+        'replays_watched_counts',
+        'unranked_beatmapset_count',
+        'user_achievements',
     ];
 
     public function transform(User $user)
@@ -71,6 +73,7 @@ class UserTransformer extends Fractal\TransformerAbstract
             'website' => $user->user_website,
             'playstyle' => $user->osu_playstyle,
             'playmode' => $user->playmode,
+            'post_count' => $user->user_posts,
             'profile_colour' => $user->user_colour,
             'profile_order' => $profileCustomization->extras_order,
             'cover_url' => $profileCustomization->cover()->url(),
@@ -109,6 +112,14 @@ class UserTransformer extends Fractal\TransformerAbstract
         );
     }
 
+    public function includeMonthlyPlaycounts(User $user)
+    {
+        return $this->collection(
+            $user->monthlyPlaycounts,
+            new UserMonthlyPlaycountTransformer
+        );
+    }
+
     public function includePage(User $user)
     {
         return $this->item($user, function ($user) {
@@ -123,6 +134,14 @@ class UserTransformer extends Fractal\TransformerAbstract
         });
     }
 
+    public function includeReplaysWatchedCounts(User $user)
+    {
+        return $this->collection(
+            $user->replaysWatchedCounts,
+            new UserReplaysWatchedCountTransformer
+        );
+    }
+
     public function includeUserAchievements(User $user)
     {
         return $this->collection(
@@ -131,11 +150,19 @@ class UserTransformer extends Fractal\TransformerAbstract
         );
     }
 
-    public function includeRecentActivity(User $user)
+    public function includeAccountHistory(User $user)
     {
+        $histories = $user->accountHistories()->recent();
+
+        if (!priv_check('UserSilenceShowExtendedInfo')->can()) {
+            $histories->default();
+        } else {
+            $histories->with('actor');
+        }
+
         return $this->collection(
-            $user->events()->recent()->get(),
-            new EventTransformer()
+            $histories->get(),
+            new UserAccountHistoryTransformer()
         );
     }
 

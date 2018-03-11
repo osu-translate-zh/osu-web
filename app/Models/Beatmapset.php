@@ -366,6 +366,13 @@ class Beatmapset extends Model implements AfterCommit
         $params['page'] = max(1, get_int($params['page'] ?? 1));
         $params['offset'] = ($params['page'] - 1) * $params['limit'];
 
+        // general
+        $validGenerals = ['recommended', 'converts'];
+        $selectedGenerals = explode('.', $params['general'] ?? null);
+        foreach ($validGenerals as $option) {
+            $params[$option] = in_array($option, $selectedGenerals, true);
+        }
+
         // mode
         $params['mode'] = get_int($params['mode'] ?? null);
         if (!in_array($params['mode'], Beatmap::MODES, true)) {
@@ -524,8 +531,28 @@ class Beatmapset extends Model implements AfterCommit
                 break;
         }
 
+        // recommended difficulty
+        if ($params['recommended'] && $params['user'] !== null) {
+            // TODO: index convert difficulties and handle them.
+            $mode = Beatmap::modeStr($params['mode'] ?? Beatmap::MODES['osu']);
+            $difficulty = $params['user']->recommendedStarDifficulty($mode);
+            $matchParams[] = [
+                'range' => [
+                    'difficulties.difficultyrating' => [
+                        'gte' => $difficulty - 0.5,
+                        'lte' => $difficulty + 0.5,
+                    ],
+                ],
+            ];
+        }
+
+        // converts
         if ($params['mode'] !== null) {
-            $matchParams[] = ['match' => ['difficulties.playmode' => $params['mode']]];
+            $modes = [$params['mode']];
+            if ($params['converts'] && $params['mode'] !== Beatmap::MODES['osu']) {
+                $modes[] = Beatmap::MODES['osu'];
+            }
+            $matchParams[] = ['terms' => ['difficulties.playmode' => $modes]];
         }
 
         if (!empty($matchParams)) {
@@ -658,7 +685,7 @@ class Beatmapset extends Model implements AfterCommit
 
     public static function coverSizes()
     {
-        $shapes = ['cover', 'card', 'list'];
+        $shapes = ['cover', 'card', 'list', 'slimcover'];
         $scales = ['', '@2x'];
 
         $sizes = [];
@@ -706,7 +733,7 @@ class Beatmapset extends Model implements AfterCommit
 
     public function coverPath()
     {
-        return "/beatmaps/{$this->beatmapset_id}/covers/";
+        return "beatmaps/{$this->beatmapset_id}/covers/";
     }
 
     public function storeCover($target_filename, $source_path)
@@ -739,118 +766,68 @@ class Beatmapset extends Model implements AfterCommit
         $this->update(['cover_updated_at' => $this->freshTimestamp()]);
     }
 
-    public function regenerateCovers()
+    public function fetchBeatmapsetArchive()
     {
-        $tmpBase = sys_get_temp_dir()."/bm/{$this->beatmapset_id}-".time();
-        $workingFolder = "$tmpBase/working";
-        $outputFolder = "$tmpBase/out";
-
-        try {
-            // make our temp folders if they don't exist
-            if (!is_dir($workingFolder)) {
-                mkdir($workingFolder, 0755, true);
-            }
-            if (!is_dir($outputFolder)) {
-                mkdir($outputFolder, 0755, true);
-            }
-
-            // start by clearing existing covers
-            $this->removeCovers();
-
-            // download and extract beatmap
-            $osz = "$tmpBase/osz.zip";
-            try {
-                $url = BeatmapMirror::getRandom()->generateUrl($this, true);
-                $ok = copy($url, $osz);
-                if (!$ok) {
-                    throw new BeatmapProcessorException('Error retrieving beatmap');
-                }
-            } catch (\Exception $e) {
-                throw new BeatmapProcessorException('Error retrieving beatmap');
-            }
-
-            $zip = new \ZipArchive;
-            $zip->open($osz);
-            $zip->extractTo($workingFolder);
-            $zip->close();
-
-            // scan through all the beatmaps in this set and find the first one with a valid background image
-            foreach ($this->beatmaps as $beatmap) {
-                $bgFilename = self::scanBMForBG("{$workingFolder}/{$beatmap->filename}");
-
-                if ($bgFilename === false) {
-                    continue;
-                }
-
-                $bgFile = ci_file_search("{$workingFolder}/{$bgFilename}");
-
-                if ($bgFile === false) {
-                    continue;
-                }
-
-                $processor = new ImageProcessorService($tmpBase);
-
-                // upload original image
-                $this->storeCover('raw.jpg', $bgFile);
-                $timestamp = time();
-
-                // upload optimized version
-                $optimized = $processor->optimize($this->coverURL('raw', $timestamp));
-                $this->storeCover('fullsize.jpg', $optimized);
-
-                // use thumbnailer to generate and upload all our variants
-                foreach (self::coverSizes() as $size) {
-                    $resized = $processor->resize($this->coverURL('fullsize', $timestamp), $size);
-                    $this->storeCover("$size.jpg", $resized);
-                }
-
-                // break after the first image has been successfully processed
-                break;
-            }
-
-            $this->update(['cover_updated_at' => $this->freshTimestamp()]);
-        } finally {
-            // clean up after ourselves
-            deltree($tmpBase);
-        }
-    }
-
-    // todo: maybe move this somewhere else (copypasta from old implementation)
-    public function scanBMForBG($beatmapFilename)
-    {
-        try {
-            $content = file_get_contents($beatmapFilename);
-            if (!$content) {
-                return false;
-            }
-        } catch (\Exception $e) {
+        $oszFile = tmpfile();
+        $url = BeatmapMirror::getRandom()->generateURL($this, true);
+        if ($url === false) {
             return false;
         }
 
-        $matching = false;
-        $imageFilename = '';
-        $lines = explode("\n", $content);
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if ($matching) {
-                $parts = explode(',', $line);
-                if (count($parts) > 2 && $parts[0] === '0') {
-                    $imageFilename = str_replace('"', '', $parts[2]);
-                    break;
-                }
-            }
-            if ($line === '[Events]') {
-                $matching = true;
-            }
-            if ($line === '[HitObjects]') {
-                break;
+        $bytesWritten = fwrite($oszFile, file_get_contents($url));
+
+        if ($bytesWritten === false) {
+            throw new BeatmapProcessorException('Error retrieving beatmap');
+        }
+
+        return new BeatmapsetArchive(get_stream_filename($oszFile));
+    }
+
+    public function regenerateCovers(array $sizesToRegenerate = null)
+    {
+        if (empty($sizesToRegenerate)) {
+            $sizesToRegenerate = static::coverSizes();
+        }
+
+        $osz = $this->fetchBeatmapsetArchive();
+        if ($osz === false) {
+            return false;
+        }
+
+        // clear existing covers
+        $this->removeCovers();
+
+        $beatmapFilenames = $this->beatmaps->map(function ($beatmap) {
+            return $beatmap->filename;
+        });
+
+        // scan for background images in $beatmapFilenames, with fallback enabled
+        $backgroundFilename = $osz->scanBeatmapsForBackground($beatmapFilenames->toArray(), true);
+
+        if ($backgroundFilename !== false) {
+            $tmpFile = tmpfile();
+            $bytesWritten = fwrite($tmpFile, $osz->readFile($backgroundFilename));
+            fseek($tmpFile, 0); // reset file position cursor, required for storeCover below
+            $backgroundImage = get_stream_filename($tmpFile);
+
+            // upload original image
+            $this->storeCover('raw.jpg', $backgroundImage);
+            $timestamp = time();
+
+            $processor = new ImageProcessorService();
+
+            // upload optimized full-size version
+            $optimized = $processor->optimize($this->coverURL('raw', $timestamp));
+            $this->storeCover('fullsize.jpg', get_stream_filename($optimized));
+
+            // use thumbnailer to generate (and then upload) all our variants
+            foreach ($sizesToRegenerate as $size) {
+                $resized = $processor->resize($this->coverURL('fullsize', $timestamp), $size);
+                $this->storeCover("$size.jpg", get_stream_filename($resized));
             }
         }
 
-        // older beatmaps may not have sanitized paths
-        $imageFilename = str_replace('\\', '/', $imageFilename);
-
-        return $imageFilename;
+        $this->update(['cover_updated_at' => $this->freshTimestamp()]);
     }
 
     public function setApproved($state, $user)
@@ -1305,5 +1282,14 @@ class Beatmapset extends Model implements AfterCommit
     public function afterCommit()
     {
         dispatch(new EsIndexDocument($this));
+    }
+
+    public static function removeMetadataText($text)
+    {
+        // TODO: see if can be combined with description extraction thingy without
+        // exploding
+        static $pattern = '/^(.*?)-{15}/s';
+
+        return preg_replace($pattern, '', $text);
     }
 }

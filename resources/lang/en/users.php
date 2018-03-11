@@ -43,6 +43,10 @@ return [
         ],
     ],
 
+    'card' => [
+        'loading' => 'Loading...',
+    ],
+
     'login' => [
         '_' => 'Sign in',
         'locked_ip' => 'your IP address is locked. Please wait a few minutes.',
@@ -79,7 +83,7 @@ return [
     'show' => [
         '404' => 'User not found! ;_;',
         'age' => ':age years old',
-        'current_location' => 'Currently in :location',
+        'change_avatar' => 'change your avatar!',
         'first_members' => 'Here since the beginning',
         'is_developer' => 'osu!developer',
         'is_supporter' => 'osu!supporter',
@@ -87,12 +91,11 @@ return [
         'lastvisit' => 'Last seen :date',
         'missingtext' => 'You might have made a typo! (or the user may have been banned)',
         'origin_age' => ':age',
-        'origin_country' => 'From :country',
         'origin_country_age' => ':age from :country',
+        'origin_country' => 'From :country',
         'page_description' => 'osu! - Everything you ever wanted to know about :username!',
         'plays_with' => 'Plays with :devices',
         'title' => ":username's profile",
-        'change_avatar' => 'change your avatar!',
 
         'edit' => [
             'cover' => [
@@ -109,7 +112,13 @@ return [
                     'unsupported_format' => 'Unsupported format.',
                 ],
             ],
+
+            'default_playmode' => [
+                'is_default_tooltip' => 'default game mode',
+                'set' => 'set :mode as profile default game mode',
+            ],
         ],
+
         'extra' => [
             'followers' => '1 follower|:count followers',
             'unranked' => 'No recent plays',
@@ -137,6 +146,11 @@ return [
             ],
             'historical' => [
                 'empty' => 'No performance records. :(',
+                'title' => 'Historical',
+
+                'monthly_playcounts' => [
+                    'title' => 'Play History',
+                ],
                 'most_played' => [
                     'count' => 'times played',
                     'title' => 'Most Played Beatmaps',
@@ -145,7 +159,9 @@ return [
                     'accuracy' => 'accuracy: :percentage',
                     'title' => 'Recent Plays (24h)',
                 ],
-                'title' => 'Historical',
+                'replays_watched_counts' => [
+                    'title' => 'Replays Watched History',
+                ],
             ],
             'kudosu' => [
                 'available' => 'Kudosu Available',
@@ -216,12 +232,46 @@ return [
                 'title' => 'Ranks',
                 'weighted_pp' => 'weighted: :pp (:percentage)',
             ],
+            'account_standing' => [
+                'title' => 'Account Standing',
+                'bad_standing' => "<strong>:username's</strong> account is not in a good standing :(",
+                'remaining_silence' => '<strong>:username</strong> will be able to speak again in :duration.',
+
+                'recent_infringements' => [
+                    'title' => 'Recent Infringements',
+                    'date' => 'date',
+                    'action' => 'action',
+                    'length' => 'length',
+                    'length_permanent' => 'Permanent',
+                    'description' => 'description',
+                    'actor' => 'by :username',
+
+                    'actions' => [
+                        'restriction' => 'Ban',
+                        'silence' => 'Silence',
+                        'note' => 'Note',
+                    ],
+                ],
+            ],
+        ],
+        'info' => [
+            'interests' => 'Interests',
+            'lastfm' => 'Last.fm',
+            'location' => 'Current Location',
+            'occupation' => 'Occupation',
+            'skype' => 'Skype',
+            'twitter' => 'Twitter',
+            'website' => 'Website',
         ],
         'page' => [
             'description' => '<strong>me!</strong> is a personal customisable area in your profile page.',
             'edit_big' => 'Edit me!',
             'placeholder' => 'Type page content here',
             'restriction_info' => "You need to be an <a href='".route('store.products.show', 'supporter-tag')."' target='_blank'>osu!supporter</a> to unlock this feature.",
+        ],
+        'post_count' => [
+            '_' => 'Contributed :count',
+            'count' => ':count forum post|:count forum posts',
         ],
         'rank' => [
             'country' => 'Country rank for :mode',

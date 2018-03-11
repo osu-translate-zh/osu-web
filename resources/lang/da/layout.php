@@ -27,14 +27,12 @@ return [
         'home' => [
             '_' => 'hjem',
             'account-edit' => 'indstillinger',
-            'friends' => 'venner',
             'friends-index' => 'venner',
             'changelog-index' => 'changelog',
             'changelog-show' => 'build',
             'getDownload' => 'download',
             'getIcons' => 'ikoner',
             'groups-show' => 'grupper',
-            'index' => 'osu!',
             'legal-show' => 'information',
             'news-index' => 'nyheder',
             'news-show' => 'nyheder',
@@ -45,7 +43,7 @@ return [
         'help' => [
             '_' => 'hjælp',
             'getFaq' => 'faq',
-            'getSupport' => 'support',
+            'getSupport' => 'support', //obsolete
             'getWiki' => 'wiki',
             'wiki-show' => 'wiki',
         ],
@@ -74,9 +72,8 @@ return [
         'community' => [
             '_' => 'fællesskab',
             'dev' => 'osu!dev',
-            'getForum' => 'forum',
+            'getForum' => 'forum', // Base text changed to plural, please check.
             'getChat' => 'chat',
-            'getSupport' => 'support',
             'getLive' => 'live',
             'contests' => 'konkurrencer',
             'profile' => 'profil',
@@ -84,10 +81,10 @@ return [
             'tournaments-index' => 'turneringer',
             'tournaments-show' => 'turneringsinfo',
             'forum-topic-watches-index' => 'abonnementer',
-            'forum-topics-create' => 'forum',
-            'forum-topics-show' => 'forum',
-            'forum-forums-index' => 'forum',
-            'forum-forums-show' => 'forum',
+            'forum-topics-create' => 'forum', // Base text changed to plural, please check.
+            'forum-topics-show' => 'forum', // Base text changed to plural, please check.
+            'forum-forums-index' => 'forum', // Base text changed to plural, please check.
+            'forum-forums-show' => 'forum', // Base text changed to plural, please check.
         ],
         'multiplayer' => [
             '_' => 'multiplayer',
@@ -113,7 +110,7 @@ return [
 
             'messages' => 'Beskeder',
             'settings' => 'Indstillinger',
-            'logout' => 'Log Ud',
+            'logout' => 'Log Ud', // Base text changed from "Log Out" to "Sign Out", please check.
             'help' => 'Hjælp',
         ],
         'store' => [
@@ -248,7 +245,7 @@ return [
         'links' => [
             'account-edit' => 'Indstillinger',
             'friends' => 'Venner',
-            'logout' => 'Log ud',
+            'logout' => 'Log ud', // Base text changed from "Log Out" to "Sign Out", please check.
             'profile' => 'Min Profil',
         ],
     ],
